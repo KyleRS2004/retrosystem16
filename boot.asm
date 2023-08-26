@@ -29,11 +29,7 @@ start:
     CMD_Check:                      ; User Input Check loop
     mov si, newline
     call printFunction
-    ;mov si, buffer                  ; Input checked in the buffer
     call bufferRead              
-    ;mov di, buffer
-    ;mov si, newline
-    ;call printFunction
     jmp UserInputLoop               ; return to input
 
 
