@@ -7,5 +7,5 @@ Long Term Design goals:
 + Basic programs designed for the OS
 + (maybe) a custom interpreter or port an open source interpreter over for something like BASIC.
 
-Currently I have user input saved to a buffer and plan to make it so that can be compared to commands.
-I use the nasm assembler.
+Commands Implemented:
++ "version" prints out version number of program.
