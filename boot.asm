@@ -29,10 +29,28 @@ start:
     CMD_Check:                      ; User Input Check loop
     mov si, newline
     call printFunction
-    call bufferRead              
-    jmp UserInputLoop               ; return to input
+    mov si, buffer
+    mov di, CMD_Version
+    call stringCompareFunction
+    je CMD_Version_Run   
 
+    jmp CMD_NOTFOUND_Run               ; return to input
 
+    CMD_Version_Run:
+    mov si, version_string
+    call printFunction
+    mov si, newline
+    call printFunction
+    mov di, buffer
+    jmp UserInputLoop
+
+    CMD_NOTFOUND_Run:
+    mov si, CMD_NOTFOUND
+    call printFunction
+    mov si, newline
+    call printFunction
+    mov di, buffer
+    jmp UserInputLoop
     
 
 
@@ -55,49 +73,22 @@ newline db 0x0a,0x0d,0               ;new line,carriage return
 
 
 
-bufferRead:
-    mov si, buffer
-    mov di, CMD_Version     ; prepares for next CMD loop check
-
-    bufferVersion:
-    lodsb                   ; Gets character from string
-    cmp al, 0            ; Checks that the end of loop hasn't been reached
-    je bufferVersionDone   ; If so, then it goes to done
+stringCompareFunction:
+    Repeat:
+    lodsb                       ; Gets character from string
+    cmp al, 0                   ; Checks that the end of loop hasn't been reached
+    je stringCompareDone   ; If so, then it goes to done
     cmp [di], al
-    je bufferVersion        ; If the ASCII characters are the same, then it shall loop
+    je RepeatInc
+    jmp stringCompareDone
+    RepeatInc:
+    inc di
+    jmp Repeat
 
-    mov di, CMD_BootScreen  ; prepares for next CMD loop check
-
-    bufferBMenu:            ; Shows boot popup
-    lodsb                   ; Gets character from string
-    cmp al, 0            ; Checks that the end of loop hasn't been reached
-    je bufferBMenuDone   ; If so, then it goes to done
+stringCompareDone:
     cmp [di], al
-    je bufferBMenu        ; If the ASCII characters are the same, then it shall loop
-jmp bufferCMD_NOTFOUND
-
-bufferVersionDone:          ; If CMD = Version
-    mov si, CMD_Version
-    call printFunction              
-    mov di, buffer
-    mov si, newline
-    call printFunction
-    ret
-bufferBMenuDone:            ; If CMD = Boot menu
-    mov si, CMD_BootScreen
-    call printFunction              
-    mov di, buffer
-    mov si, newline
-    call printFunction
     ret
 
-bufferCMD_NOTFOUND:
-    mov si, CMD_NOTFOUND
-    call printFunction              
-    mov di, buffer
-    mov si, newline
-    call printFunction
-    ret
 
 
 
