@@ -61,7 +61,7 @@ bufferRead:
 
     bufferVersion:
     lodsb                   ; Gets character from string
-    cmp al, 0x00            ; Checks that the end of loop hasn't been reached
+    cmp al, 0            ; Checks that the end of loop hasn't been reached
     je bufferVersionDone   ; If so, then it goes to done
     cmp [di], al
     je bufferVersion        ; If the ASCII characters are the same, then it shall loop
@@ -70,14 +70,11 @@ bufferRead:
 
     bufferBMenu:            ; Shows boot popup
     lodsb                   ; Gets character from string
-    cmp al, 0x00            ; Checks that the end of loop hasn't been reached
+    cmp al, 0            ; Checks that the end of loop hasn't been reached
     je bufferBMenuDone   ; If so, then it goes to done
     cmp [di], al
     je bufferBMenu        ; If the ASCII characters are the same, then it shall loop
-
-    mov ah, CMD_NOTFOUND    ; Command Not Found Error
-    int 10h
-jmp bufferRead
+jmp bufferCMD_NOTFOUND
 
 bufferVersionDone:          ; If CMD = Version
     mov si, CMD_Version
@@ -93,6 +90,15 @@ bufferBMenuDone:            ; If CMD = Boot menu
     mov si, newline
     call printFunction
     ret
+
+bufferCMD_NOTFOUND:
+    mov si, CMD_NOTFOUND
+    call printFunction              
+    mov di, buffer
+    mov si, newline
+    call printFunction
+    ret
+
 
 
 
