@@ -29,11 +29,11 @@ start:
     CMD_Check:                      ; User Input Check loop
     mov si, newline
     call printFunction
-    mov si, buffer                  ; Input checked in the buffer
-    call printFunction              
-    mov di, buffer
-    mov si, newline
-    call printFunction
+    ;mov si, buffer                  ; Input checked in the buffer
+    call bufferRead              
+    ;mov di, buffer
+    ;mov si, newline
+    ;call printFunction
     jmp UserInputLoop               ; return to input
 
 
@@ -48,11 +48,59 @@ jmp $
 ;Data
 version_string db 'Version: prealpha 0.0.0.1', 0  ;defines a string I want to output later.
 CMD_Version db 'version', 0
+CMD_BootScreen db '[bootscreen]'
+CMD_NOTFOUND db 'Command Not Found', 0
 buffer times 10 db 0
 backspace db 0x08,0x20,0x08,0        ; backspace, space, backspace
 newline db 0x0a,0x0d,0               ;new line,carriage return
 
 ;Functions
+
+
+
+
+bufferRead:
+    mov si, buffer
+    mov di, CMD_Version     ; prepares for next CMD loop check
+
+    bufferVersion:
+    lodsb                   ; Gets character from string
+    cmp al, 0x00            ; Checks that the end of loop hasn't been reached
+    je bufferVersionDone   ; If so, then it goes to done
+    cmp [di], al
+    je bufferVersion        ; If the ASCII characters are the same, then it shall loop
+
+    mov di, CMD_BootScreen  ; prepares for next CMD loop check
+
+    bufferBMenu:            ; Shows boot popup
+    lodsb                   ; Gets character from string
+    cmp al, 0x00            ; Checks that the end of loop hasn't been reached
+    je bufferBMenuDone   ; If so, then it goes to done
+    cmp [di], al
+    je bufferBMenu        ; If the ASCII characters are the same, then it shall loop
+
+    mov ah, CMD_NOTFOUND    ; Command Not Found Error
+    int 10h
+jmp bufferRead
+
+bufferVersionDone:          ; If CMD = Version
+    mov si, CMD_Version
+    call printFunction              
+    mov di, buffer
+    mov si, newline
+    call printFunction
+    ret
+bufferBMenuDone:            ; If CMD = Boot menu
+    mov si, CMD_BootScreen
+    call printFunction              
+    mov di, buffer
+    mov si, newline
+    call printFunction
+    ret
+
+
+
+
 
 printFunction:      ; Credit to mikeos for this function.
 	mov ah, 0Eh		; int 10h 'print char' function
