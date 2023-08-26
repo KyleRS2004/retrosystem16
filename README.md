@@ -5,3 +5,4 @@ Long Design goals:
 + 16 bit terminal based OS
 
 Currently I have user input saved to a buffer and plan to make it so that can be compared to commands.
+I use the nasm assembler.
