@@ -9,34 +9,31 @@ start:
     UserInputLoop:
     mov ah, 00h                     ;keyboard input is set to register ah
     int 16h                         ;keyboard input is gotten
-
     cmp al, 0x0d                    ; press "enter" to go to cmd check
     je CMD_Check
     cmp al, 0x08
     je InputRemove
-    mov ah, 0Eh		; int 10h 'print char' function
-    int 10h                         ; print current input
     mov [di], al                    ; move input into the buffer
     inc di
+    mov ah, 0Eh		; int 10h 'print char' function
+    int 10h                         ; print current input
     jmp UserInputLoop
 
     InputRemove:
     dec di                          ; moves back to previous inputted byte
     mov byte [di], 0x00             ; sets that byte to null
-    ;mov ah,                        ; something that tells the interrupt to be able to clear the screen?
-    ;int                            ; anything that clears the screen?
-    mov si, buffer
+    mov si, backspace
     call printFunction
-    mov di, buffer
     jmp UserInputLoop
 
-
-
     CMD_Check:                      ; User Input Check loop
-    mov si, buffer                  ; Input checked in the buffer
+    mov si, newline
     call printFunction
-    inc di
-    mov byte [di], 0x00             ; terminates print
+    mov si, buffer                  ; Input checked in the buffer
+    call printFunction              
+    mov di, buffer
+    mov si, newline
+    call printFunction
     jmp UserInputLoop               ; return to input
 
 
@@ -52,6 +49,8 @@ jmp $
 version_string db 'Version: prealpha 0.0.0.1', 0  ;defines a string I want to output later.
 CMD_Version db 'version', 0
 buffer times 10 db 0
+backspace db 0x08,0x20,0x08,0        ; backspace, space, backspace
+newline db 0x0a,0x0d,0               ;new line,carriage return
 
 ;Functions
 
