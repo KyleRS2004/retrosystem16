@@ -28,11 +28,16 @@ start:
 
     CMD_Check:                      ; User Input Check loop
     mov si, newline
-    call printFunction
+    call printFunction              ; Moves the cursor to a new line
     mov si, buffer
     mov di, CMD_Version
-    call stringCompareFunction
+    call stringCompareFunction      ; Checks the buffer for the Version command
     je CMD_Version_Run   
+
+    mov si, buffer
+    mov di, CMD_BootScreen
+    call stringCompareFunction      ; Checks the buffer for the Bootscreen command
+    je CMD_BootScreen_Run
 
     jmp CMD_NOTFOUND_Run               ; return to input
 
@@ -42,6 +47,7 @@ start:
     mov si, newline
     call printFunction
     mov di, buffer
+    mov byte [di], 0x00
     jmp UserInputLoop
 
     CMD_NOTFOUND_Run:
@@ -50,9 +56,17 @@ start:
     mov si, newline
     call printFunction
     mov di, buffer
+    mov byte [di], 0x00
     jmp UserInputLoop
     
-
+    CMD_BootScreen_Run:
+    mov si, CMD_BootScreen
+    call printFunction
+    mov si, newline
+    call printFunction
+    mov di, buffer
+    mov byte [di], 0x00
+    jmp UserInputLoop
 
 jmp $
 
@@ -62,9 +76,9 @@ jmp $
 ;Data
 version_string db 'Version: prealpha 0.0.0.1', 0  ;defines a string I want to output later.
 CMD_Version db 'version', 0
-CMD_BootScreen db '[bootscreen]'
+CMD_BootScreen db 'bootscreen', 0
 CMD_NOTFOUND db 'Command Not Found', 0
-buffer times 10 db 0
+buffer times 15 db 0
 backspace db 0x08,0x20,0x08,0        ; backspace, space, backspace
 newline db 0x0a,0x0d,0               ;new line,carriage return
 
@@ -88,8 +102,6 @@ stringCompareFunction:
 stringCompareDone:
     cmp [di], al
     ret
-
-
 
 
 
