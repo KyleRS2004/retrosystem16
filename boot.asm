@@ -4,6 +4,10 @@ bits 16
 
 ;Bootloading code
 start:
+    mov si, bootscreen_string
+    call printFunction
+    mov si, newline
+    call printFunction
     mov di, buffer
     
     UserInputLoop:
@@ -60,7 +64,7 @@ start:
     jmp UserInputLoop
     
     CMD_BootScreen_Run:
-    mov si, CMD_BootScreen
+    mov si, bootscreen_string
     call printFunction
     mov si, newline
     call printFunction
@@ -75,6 +79,7 @@ jmp $
 
 ;Data
 version_string db 'Version: prealpha 0.0.0.1', 0  ;defines a string I want to output later.
+bootscreen_string db 'Welcome to Retrosystem16', 0
 CMD_Version db 'version', 0
 CMD_BootScreen db 'bootscreen', 0
 CMD_NOTFOUND db 'Command Not Found', 0
