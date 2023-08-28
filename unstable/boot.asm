@@ -3,19 +3,24 @@ bits 16
 
 start:			; start of disc read
 mov di, buffer		; sets di to the buffer
-mov ah, 03h
-mov al, 10		; ten sectors set to read
-mov ch, 1		; low eight bits of cylinder number
-mov cl, 2-11		; sectors two through eleven
-mov dh, 1		; drive head 1
-mov dl, 1		; drive 1
+mov ah, 2
+mov al, 1		; ten sectors set to read
+mov ch, 0		; low eight bits of cylinder number
+mov cl, 2      	; sectors two through eleven
+mov dh, 0		; drive head 1
 mov [es:bx], di
+mov dl, 0		; drive letter 1
 
-int 0x10		; bios interrupt to read disc
+int 13h		; bios interrupt to read disc
+
+mov di, error_code
+mov ah, [di]
+int 16h
 
 jmp $
 
 buffer times 15 db 0	; defines the buffer
+error_code times 3 db 0	; defines the error_code buffer
 
 ;
 ;   Magic boot number
