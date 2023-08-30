@@ -1,40 +1,27 @@
 [org 0x7c00]
 bits 16
 
-start:			; start of disc read
-mov di, buffer		; sets di to the buffer
-mov ah, 2
-mov al, 1		; ten sectors set to read
+mov [driveL], dl
+start:			; start of disk read
+mov ah, 2		; parameter to tell bios to read
+mov al, 1		; sectors set to read
 mov ch, 0		; low eight bits of cylinder number
-mov cl, 2      	; sectors two through eleven
-mov dh, 0		; drive head 1
-mov [es:bx], di
-mov dl, 0		; drive letter 1
+mov cl, 2      	; sector 2
+mov dh, 0		; drive head
+mov bx, buffer
+mov dl, [driveL]; drive letter
 
-int 13h		; bios interrupt to read disc
+int 0x13		; bios interrupt to read disk
 
-mov di, error_code
-mov [di], al
-mov si, error_code
-call printFunction
+mov ah, 0Eh		; error check
+mov al, 0x30
+int 10h
 
 jmp $
 
 buffer times 15 db 0	; defines the buffer
-error_code times 3 db 0	; defines the error_code buffer
+driveL times 2 db 0
 
-printFunction:      ; Credit to mikeos for this function.
-	mov ah, 0Eh		; int 10h 'print char' function
-
-.repeat:            ; Loop
-	lodsb			; Get character from string
-	cmp al, 0
-	je .done		; If char is zero, end of string
-	int 10h			; Otherwise, print it
-	jmp .repeat
-
-.done:
-	ret
 
 ;
 ;   Magic boot number
