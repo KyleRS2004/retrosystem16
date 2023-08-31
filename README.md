@@ -11,4 +11,4 @@ Commands Implemented:
 + "version" prints out version number of program.
 + "bootscreen" prints out the welcome screen.
 
-I can't figure out how to make the jump from the bootloader to the kernel and the more modern easier bootloaders require a level of understanding of C that I just don't have yet. SO for now this project is being paused, maybe outright abandon.  Feel free to fork the project if you want, just keep the fork licensed under gpl v3.
+I can't figure out how to make the jump from the bootloader to the kernel and the more modern easier bootloaders require a level of understanding of C that I just don't have yet. SO for now this project is being paused, maybe outright abandoned.  Feel free to fork the project if you want, just keep the fork licensed under gpl v3.
